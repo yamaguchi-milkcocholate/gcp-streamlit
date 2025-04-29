@@ -16,5 +16,8 @@ docker push asia-northeast1-docker.pkg.dev/my-playground-458212/gcp-streamlit-do
 
 ## 参考
 
-- https://future-architect.github.io/articles/20250422a/
-- https://zenn.dev/google_cloud_jp/articles/streamlit-01-hello
+- streamlit x gcp
+  - https://future-architect.github.io/articles/20250422a/
+  - https://zenn.dev/google_cloud_jp/articles/streamlit-01-hello
+- gcp x github-actions
+  - https://zenn.dev/cloud_ace/articles/7fe428ac4f25c8
