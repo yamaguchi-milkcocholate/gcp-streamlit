@@ -51,4 +51,7 @@ jobs:
         run: |-
           DOCKER_TAG="${LOCATION}-docker.pkg.dev/${PROJECT_ID}/${REPOSITORY}/${IMAGE}:${TAG}"
           cd streamlit && docker build -t ${DOCKER_TAG} .
+      - name: Push the Docker image
+        run: |-
+          DOCKER_TAG="${LOCATION}-docker.pkg.dev/${PROJECT_ID}/${REPOSITORY}/${IMAGE}:${TAG}"
           docker push "${DOCKER_TAG}"
