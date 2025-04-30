@@ -3,6 +3,7 @@ run-name: Docker Image CI by ${{ github.actor }} 🚀
 env:
   PROJECT_ID: "my-playground-458212"
   LOCATION: "asia-northeast1"
+  SERVICE_ACCOUNT: "github-actions-sa@my-playground-458212.iam.gserviceaccount.com"
   REPOSITORY: "gcp-streamlit-docker-repo"
   IMAGE: "streamlit"
   TAG: "latest"
@@ -36,6 +37,7 @@ jobs:
         uses: "google-github-actions/auth@f112390a2df9932162083945e46d439060d66ec2" # google-github-actions/auth@v2
         with:
           project_id: "${{ env.PROJECT_ID }}"
+          service_account: "${{ env.SERVICE_ACCOUNT }}"
           workload_identity_provider: "${{ env.WORKLOAD_IDENTITY_PROVIDER }}"
 
       # Authenticate Docker to Google Cloud Artifact Registry
@@ -45,8 +47,12 @@ jobs:
           username: "oauth2accesstoken"
           password: "${{ steps.auth.outputs.auth_token }}"
           registry: "${{ env.LOCATION }}-docker.pkg.dev"
+      - name: "Set up Cloud SDK"
+        uses: "google-github-actions/setup-gcloud@v2"
       - name: Configure Docker
         run: gcloud auth configure-docker "${{ env.LOCATION }}-docker.pkg.dev"
+
+      # Dockerイメージのビルドとプッシュ
       - name: Build the Docker image
         run: |-
           DOCKER_TAG="${LOCATION}-docker.pkg.dev/${PROJECT_ID}/${REPOSITORY}/${IMAGE}:${TAG}"
