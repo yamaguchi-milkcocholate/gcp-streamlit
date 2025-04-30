@@ -6,12 +6,23 @@
 cd streamlit
 
 # イメージをビルド
-docker build -t asia-northeast1-docker.pkg.dev/my-playground-458212/gcp-streamlit-docker-repo/streamlit:0.1 .
+docker build -t asia-northeast1-docker.pkg.dev/my-playground-458212/gcp-streamlit-docker-repo/streamlit:latest .
 
 # Dockerログイン
 gcloud auth configure-docker asia-northeast1-docker.pkg.dev
 # Artifact Registoryにプッシュ
-docker push asia-northeast1-docker.pkg.dev/my-playground-458212/gcp-streamlit-docker-repo/streamlit:0.1
+docker push asia-northeast1-docker.pkg.dev/my-playground-458212/gcp-streamlit-docker-repo/streamlit:latest
+```
+
+## ローカルから Cloud Run にデプロイ
+
+```shell
+gcloud run deploy managed-streamlit \
+--image asia-northeast1-docker.pkg.dev/my-playground-458212/gcp-streamlit-docker-repo/streamlit:latest \
+--platform managed \
+--region asia-northeast1 \
+--port 8501 \
+--allow-unauthenticated
 ```
 
 ## 参考
