@@ -34,3 +34,9 @@ resource "google_service_account" "main" {
   description  = "GitHub Actions 用 Service Account"
   project      = var.project_id
 }
+
+resource "google_project_iam_member" "artifact_registry_access" {
+  project = var.project_id
+  role    = "roles/artifactregistry.writer"
+  member  = "serviceAccount:github-actions-sa@${var.project_id}.iam.gserviceaccount.com"
+}
