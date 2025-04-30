@@ -28,6 +28,7 @@ resource "google_service_account_iam_member" "workload_identity_sa_iam" {
   member             = "principal://iam.googleapis.com/${google_iam_workload_identity_pool.main.name}/subject/${var.github_repo_owner}/${var.github_repo_name}"
 }
 
+# github-actionsからDockerイメージをpushするためのサービスアカウント
 resource "google_service_account" "main" {
   account_id   = "github-actions-sa"
   display_name = "GitHub Actions Service Account"
@@ -35,6 +36,7 @@ resource "google_service_account" "main" {
   project      = var.project_id
 }
 
+# サービスアカウントにArtifact Registoryの書き込み権限を付与
 resource "google_project_iam_member" "artifact_registry_access" {
   project = var.project_id
   role    = "roles/artifactregistry.writer"
