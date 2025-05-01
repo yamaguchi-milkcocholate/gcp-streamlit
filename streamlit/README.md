@@ -11,3 +11,18 @@ uv run streamlit run home.py --server.enableCORS=false --server.port=8501
 ```shell
 uv pip freeze > requirements.txt
 ```
+
+# 準備
+
+- LangGraph で Dag を描画するために必要なライブラリをインストール
+
+```shell
+brew install graphviz
+```
+
+# 参考
+
+- langchain x GCP Vertex AI
+  - https://python.langchain.com/docs/integrations/providers/google/#google-cloud
+- Gemini の料金
+  - https://cloud.google.com/vertex-ai/generative-ai/pricing?hl=ja

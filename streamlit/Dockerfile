@@ -2,6 +2,10 @@ FROM python:3.10-slim-bullseye
 
 WORKDIR /app
 
+RUN apt-get update && apt-get install -y \
+    graphviz \
+    graphviz-dev
+
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 
