@@ -9,5 +9,7 @@ dependencies = [
     "langchain-google-genai>=2.1.4",
     "langgraph>=0.4.0",
     "python-dotenv>=1.1.0",
+    "pyyaml>=6.0.2",
     "streamlit>=1.44.1",
+    "streamlit-image-select>=0.6.0",
 ]

@@ -251,7 +251,9 @@ dependencies = [
     { name = "langchain-google-genai" },
     { name = "langgraph" },
     { name = "python-dotenv" },
+    { name = "pyyaml" },
     { name = "streamlit" },
+    { name = "streamlit-image-select" },
 ]
 
 [package.metadata]
@@ -260,7 +262,9 @@ requires-dist = [
     { name = "langchain-google-genai", specifier = ">=2.1.4" },
     { name = "langgraph", specifier = ">=0.4.0" },
     { name = "python-dotenv", specifier = ">=1.1.0" },
+    { name = "pyyaml", specifier = ">=6.0.2" },
     { name = "streamlit", specifier = ">=1.44.1" },
+    { name = "streamlit-image-select", specifier = ">=0.6.0" },
 ]
 
 [[package]]
@@ -1501,6 +1505,18 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/3e/c0/7286284567e5045f0c587c426d0c41aee5d10c0a2e360e627a83037e9f0c/streamlit-1.44.1.tar.gz", hash = "sha256:c6914ed6d5b76870b461510476806db370f36425ae0e6654d227c988288198d3", size = 9423685 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/eb/17/fc425e1d4d86e31b2aaf0812a2ef2163763a0670d671720c7c36e8679323/streamlit-1.44.1-py3-none-any.whl", hash = "sha256:9fe355f58b11f4eb71e74f115ce1f38c4c9eaff2733e6bcffb510ac1298a5990", size = 9812242 },
+]
+
+[[package]]
+name = "streamlit-image-select"
+version = "0.6.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "streamlit" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/15/b4/819e4c27e983955897d01e987cc91da183e58835c04613c6a0004f0ae331/streamlit-image-select-0.6.0.tar.gz", hash = "sha256:4e64913b17d86f592700f867dc640b8c8dc1282aff78162c7b2b66997a84fe17", size = 696916 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/f0/8c/10ffa4f35b0c61a23990399be10b37fd1d5a4667c8bcd378d81d822562ab/streamlit_image_select-0.6.0-py3-none-any.whl", hash = "sha256:5a87d1b0a1f9010939fea27c569c3a711a028148aa4fb7b8036bf699d9e2b9aa", size = 706724 },
 ]
 
 [[package]]
