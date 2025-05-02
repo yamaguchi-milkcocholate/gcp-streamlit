@@ -11,18 +11,14 @@ from typing_extensions import TypedDict
 
 
 class State(TypedDict):
-    output_theme_changed_base64: str
-    output_theme_changed_supplement: str
-    output_result_base64: str
-    output_result_supplement: str
+    output_first_phase: str
+    output_add_color: str
+    output_second_phase: str
 
 
 @dataclass
 class LineDrawGenerationLifecycle:
     target_base64: str
-    theme_base64: str
-    theme_description: str
-    user_request: str
 
     def __post_init__(self) -> None:
         root_dir = Path(__file__).resolve().parent.parent
@@ -32,29 +28,13 @@ class LineDrawGenerationLifecycle:
             model="models/gemini-2.0-flash-exp-image-generation"
         )
 
-    def change_theme(self, state: State) -> State:
-        print("---Change Theme---")
+    def first_phase(self, state: State) -> State:
+        print("---1st Phase---")
 
         target_image = f"data:image/jpeg;base64,{self.target_base64}"
-        theme_image = f"data:image/jpeg;base64,{self.theme_base64}"
-        prompt = f"""
-        target imageを次のように修正してください。
-        - theme imageを参考にしてください
-        - requestのように修正してください
-        
-        以下は与えられる入力についてです。
-        ```
-        - images
-          1. The first image : theme image
-          2. The second image : target image
-        - theme description : {self.theme_description}
-        - request : {self.user_request}
-        ```
-        """
         message = HumanMessage(
             content=[
-                {"type": "text", "text": prompt},
-                {"type": "image_url", "image_url": theme_image},
+                {"type": "text", "text": "この画像を白黒の塗り絵にしてください"},
                 {"type": "image_url", "image_url": target_image},
             ]
         )
@@ -62,55 +42,43 @@ class LineDrawGenerationLifecycle:
             [message],
             generation_config=dict(response_modalities=["TEXT", "IMAGE"]),
         )
-        text, image = output.content
+        _, image = output.content
+        output_first_phase = image["image_url"]["url"].split(",")[-1]
 
-        output_theme_changed_supplement = text
-        output_theme_changed_base64 = image["image_url"]["url"].split(",")[-1]
+        return {"output_first_phase": output_first_phase}
 
-        return {
-            "output_theme_changed_supplement": output_theme_changed_supplement,
-            "output_theme_changed_base64": output_theme_changed_base64,
-        }
-
-    def line_draw(self, state: State) -> State:
-        print("---Line Draw---")
-
-        target_image = f"data:image/jpeg;base64,{state['output_theme_changed_base64']}"
-        prompt = """
-        次の画像をいかに注意して線画にしてください。
-        - 輪郭線がはっきりとしていること
-        - ぼやけている部分をはっきりさせること
-        - 影や色をつけないこと。必ず白黒の線画にすること。
-        - 画像の内容を変えないこと
-        """
+    def add_color(self, state: State) -> State:
+        print("---Add Color---")
+        orginal_image = f"data:image/jpeg;base64,{self.target_base64}"
+        target_image = f"data:image/jpeg;base64,{state['output_first_phase']}"
         message = HumanMessage(
             content=[
-                {"type": "text", "text": prompt},
+                # {"type": "image_url", "image_url": orginal_image},
+                # {"type": "text", "text": "この画像の色とりを参考にして、"},
                 {"type": "image_url", "image_url": target_image},
+                {
+                    "type": "text",
+                    "text": "この画像に色鉛筆で書いたように色をつけてください",
+                },
             ]
         )
         output = self.llm.invoke(
             [message],
             generation_config=dict(response_modalities=["TEXT", "IMAGE"]),
         )
-        text, image = output.content
+        _, image = output.content
+        output_add_color = image["image_url"]["url"].split(",")[-1]
 
-        output_result_supplement = text
-        output_result_base64 = image["image_url"]["url"].split(",")[-1]
-
-        return {
-            "output_result_supplement": output_result_supplement,
-            "output_result_base64": output_result_base64,
-        }
+        return {"output_add_color": output_add_color}
 
     def run(self) -> dict[str, str]:
         builder = StateGraph(State)
-        builder.add_node("change_theme", self.change_theme)
-        builder.add_node("line_draw", self.line_draw)
+        builder.add_node("first_phase", self.first_phase)
+        builder.add_node("add_color", self.add_color)
 
-        builder.add_edge(START, "change_theme")
-        builder.add_edge("change_theme", "line_draw")
-        builder.add_edge("line_draw", END)
+        builder.add_edge(START, "first_phase")
+        builder.add_edge("first_phase", "add_color")
+        builder.add_edge("add_color", END)
 
         memory = MemorySaver()
         graph = builder.compile(checkpointer=memory)
@@ -121,18 +89,10 @@ class LineDrawGenerationLifecycle:
 
         results = {}
         for event in graph.stream(initial_input, thread, stream_mode="updates"):
-            if "change_theme" in event:
-                print(
-                    f"change_theme: {event['change_theme']['output_theme_changed_supplement']}"
-                )
-                results["theme_changed_base64"] = event["change_theme"][
-                    "output_theme_changed_base64"
-                ]
-            elif "line_draw" in event:
-                print(f"line_draw: {event['line_draw']['output_result_supplement']}")
-                results["line_draw_base64"] = event["line_draw"]["output_result_base64"]
-            print("\n")
-
+            if "first_phase" in event:
+                results["first_phase"] = event["first_phase"]["output_first_phase"]
+            elif "add_color" in event:
+                results["add_color"] = event["add_color"]["output_add_color"]
         del graph
 
         return results

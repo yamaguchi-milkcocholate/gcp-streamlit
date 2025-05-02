@@ -41,32 +41,19 @@ if st.button("実行", disabled=st.session_state.running, key="run_button"):
         with st.spinner(text="画像を作成しています...", show_time=False):
             # 画像を保存
             image_dir = Path(__file__).parent.parent / "images"
-            image_filepath = image_dir / "uploaded_image.jpg"
+            image_filepath = image_dir / "pokemon.png"
             # with open(image_dir / "uploaded_image.jpg", "wb") as f:
             #     f.write(uploaded_file.getbuffer())
             # st.success("画像を保存しました")
 
             base64_string = encode_image_to_base64(image_path=image_filepath)
 
-            result = LineDrawGenerationLifecycle(
-                target_base64=base64_string,
-                theme_base64=selected_theme["base64"],
-                theme_description=selected_theme["description"],
-                user_request="イラストにしてください",
-            ).run()
+            result = LineDrawGenerationLifecycle(target_base64=base64_string).run()
 
-            theme_changed_image = decode_base64_to_image(
-                base64_string=result["theme_changed_base64"]
-            )
-            result_image = decode_base64_to_image(
-                base64_string=result["line_draw_base64"]
-            )
-            st.image(
-                theme_changed_image,
-                caption="テーマが変更された画像",
-                use_container_width=True,
-            )
-            st.image(result_image, caption="線画画像", use_container_width=True)
+            first_phase = decode_base64_to_image(base64_string=result["first_phase"])
+            add_color = decode_base64_to_image(base64_string=result["add_color"])
+            st.image(first_phase, caption="1st", use_container_width=True)
+            st.image(add_color, caption="add color", use_container_width=True)
 
             # img_data = debode_base64_to_image(base64_string=base64_string)
             # st.image(img_data, caption="Uploaded Image", use_container_width=True)
