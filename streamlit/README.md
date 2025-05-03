@@ -12,6 +12,15 @@ uv run streamlit run home.py --server.enableCORS=false --server.port=8501
 uv pip freeze > requirements.txt
 ```
 
+# デプロイ
+
+- ローカルから Terraform コマンドを実行
+
+```shell
+cd terraform/prod
+terraform apply
+```
+
 # 準備
 
 - LangGraph で Dag を描画するために必要なライブラリをインストール
