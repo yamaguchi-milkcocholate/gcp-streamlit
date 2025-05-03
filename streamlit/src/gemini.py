@@ -49,12 +49,10 @@ class LineDrawGenerationLifecycle:
 
     def add_color(self, state: State) -> State:
         print("---Add Color---")
-        orginal_image = f"data:image/jpeg;base64,{self.target_base64}"
+
         target_image = f"data:image/jpeg;base64,{state['output_first_phase']}"
         message = HumanMessage(
             content=[
-                # {"type": "image_url", "image_url": orginal_image},
-                # {"type": "text", "text": "この画像の色とりを参考にして、"},
                 {"type": "image_url", "image_url": target_image},
                 {
                     "type": "text",
@@ -87,12 +85,19 @@ class LineDrawGenerationLifecycle:
         thread = {"configurable": {"thread_id": str(int(time.time()))}}
         # Run the graph until the first interruption
 
-        results = {}
-        for event in graph.stream(initial_input, thread, stream_mode="updates"):
-            if "first_phase" in event:
-                results["first_phase"] = event["first_phase"]["output_first_phase"]
-            elif "add_color" in event:
-                results["add_color"] = event["add_color"]["output_add_color"]
+        try:
+            results = {}
+            for event in graph.stream(initial_input, thread, stream_mode="updates"):
+                if "first_phase" in event:
+                    results["first_phase"] = event["first_phase"]["output_first_phase"]
+                elif "add_color" in event:
+                    results["add_color"] = event["add_color"]["output_add_color"]
+        except Exception as e:
+            raise GeminiException("Gemini 2.0 failed") from e
         del graph
 
         return results
+
+
+class GeminiException(Exception):
+    pass
