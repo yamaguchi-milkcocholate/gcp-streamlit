@@ -2,11 +2,9 @@ FROM python:3.10-slim-bullseye
 
 WORKDIR /app
 
+RUN ln -sf /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
 RUN apt-get update && apt-get install -y \
-    libglib2.0-0 \
-    libsm6 \
-    libxrender1 \
-    libxext6
+    libopencv-dev
 
 COPY requirements.txt .
 RUN pip install -r requirements.txt

@@ -12,6 +12,19 @@ uv run streamlit run home.py --server.enableCORS=false --server.port=8501
 uv pip freeze > requirements.txt
 ```
 
+- Docker コンテナを起動
+  - 基本的には uv 環境を直接使用して開発可能だが、cloud run のコンテナイメージに関係する開発をしたい場合は、ローカルで Docker コンテナを立てて streamlit を実行する
+
+```shell
+cd streamlit
+# ビルド
+docker compose build
+# 起動
+docker compose up
+# streamlitにアクセス
+http://localhost:8501/
+```
+
 # デプロイ
 
 - ローカルから Terraform コマンドを実行
