@@ -16,6 +16,10 @@ resource "google_cloud_run_service" "streamlit_service" {
         ports {
           container_port = 8501
         }
+        env {
+          name  = "GOOGLE_API_KEY"
+          value = var.google_ai_studio_api_key
+        }
       }
     }
   }

@@ -19,3 +19,20 @@ module "workload_identity" {
   github_repo_owner = "yamaguchi-milkcocholate"
   github_repo_name  = "gcp-streamlit"
 }
+
+# Creating secret
+resource "google_secret_manager_secret" "ar-svc-secret" {
+  project   = local.project_id
+  secret_id = "google-ai-studio-api-key"
+
+  labels = {
+    label = "gcp-streamlit"
+  }
+  replication {
+    user_managed {
+      replicas {
+        location = local.location
+      }
+    }
+  }
+}

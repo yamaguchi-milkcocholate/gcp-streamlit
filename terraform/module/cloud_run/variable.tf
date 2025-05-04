@@ -22,3 +22,9 @@ variable "artifact_registry_image_name" {
   description = "Artifact Registry イメージ名"
   type        = string
 }
+
+variable "google_ai_studio_api_key" {
+  description = "Google AI Studio API キー"
+  type        = string
+  sensitive   = true
+}
